@@ -1,0 +1,45 @@
+meta {
+  name: Sign In
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-in
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "admin",
+    "password": "admin123"
+  }
+}
+
+docs {
+  # Sign In
+  
+  Login to get JWT access token.
+  
+  ## Response
+  Returns accessToken and user details.
+  
+  ## Usage
+  Copy the accessToken and set it in the environment variable `token`.
+}
+
+tests {
+  test("Status code is 200 or 201", function() {
+    expect([200, 201]).to.include(res.getStatus());
+  });
+  
+  test("Response has accessToken", function() {
+    expect(res.body).to.have.property('accessToken');
+  });
+  
+  // Automatically save token to environment
+  if (res.body.accessToken) {
+    bru.setEnvVar("token", res.body.accessToken);
+  }
+}

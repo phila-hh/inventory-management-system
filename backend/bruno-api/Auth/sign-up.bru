@@ -1,0 +1,46 @@
+meta {
+  name: Sign Up
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-up
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "admin",
+    "password": "password",
+    "name": "Admin User",
+    "role": "admin"
+  }
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Response has accessToken", function() {
+    expect(res.body).to.have.property('accessToken');
+  });
+}
+
+docs {
+  # Sign Up
+  
+  Create a new user account.
+  
+  ## Roles
+  - `admin`: Full access to all features
+  - `staff`: Limited access (cannot create/edit/delete inventory)
+  
+  ## Required Fields
+  - username (unique)
+  - password (min 6 characters)
+  - name
+  - role
+}

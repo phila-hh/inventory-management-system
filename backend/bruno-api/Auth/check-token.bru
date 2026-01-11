@@ -1,0 +1,31 @@
+meta {
+  name: Check Token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/check-token
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Check Token
+  
+  Verify if the current JWT token is valid.
+  
+  ## Response
+  - 200: Token is valid
+  - 401: Token is invalid or expired
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
