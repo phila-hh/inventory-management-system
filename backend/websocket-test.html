@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test - Inventory Management</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .connected { background: #d4edda; color: #155724; }
+        .disconnected { background: #f8d7da; color: #721c24; }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .log-entry {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .timestamp {
+            color: #666;
+            margin-right: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 WebSocket Connection Test</h1>
+        
+        <div>
+            <label for="serverUrl">Server URL:</label><br>
+            <input type="text" id="serverUrl" value="http://localhost:3000" placeholder="http://localhost:3000">
+            <button onclick="connect()">Connect</button>
+            <button onclick="disconnect()">Disconnect</button>
+        </div>
+
+        <div id="status" class="status disconnected">
+            ❌ Not Connected
+        </div>
+
+        <div>
+            <h3>Test Actions:</h3>
+            <input type="text" id="userId" placeholder="User ID (e.g., user123)" value="test-user-123">
+            <button onclick="registerUser()">Register User</button>
+            <button onclick="getOnlineUsers()">Get Online Users</button>
+        </div>
+
+        <div class="log" id="log">
+            <div class="log-entry">
+                <span class="timestamp">[Ready]</span>
+                <span>Click "Connect" to start testing WebSocket connection...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let socket = null;
+
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span><span>${icon} ${message}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateStatus(connected) {
+            const status = document.getElementById('status');
+            if (connected) {
+                status.className = 'status connected';
+                status.textContent = '✅ Connected';
+            } else {
+                status.className = 'status disconnected';
+                status.textContent = '❌ Disconnected';
+            }
+        }
+
+        function connect() {
+            const url = document.getElementById('serverUrl').value;
+            
+            if (socket && socket.connected) {
+                addLog('Already connected!', 'warning');
+                return;
+            }
+
+            addLog(`Attempting to connect to ${url}...`);
+
+            socket = io(url, {
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: 5
+            });
+
+            socket.on('connect', () => {
+                addLog('Connected successfully!', 'success');
+                addLog(`Socket ID: ${socket.id}`, 'success');
+                updateStatus(true);
+            });
+
+            socket.on('disconnect', (reason) => {
+                addLog(`Disconnected: ${reason}`, 'error');
+                updateStatus(false);
+            });
+
+            socket.on('connect_error', (error) => {
+                addLog(`Connection error: ${error.message}`, 'error');
+                updateStatus(false);
+            });
+
+            
+            socket.on('inventory-update', (data) => {
+                addLog(`📦 Inventory Update: ${JSON.stringify(data)}`, 'success');
+            });
+
+            
+            socket.on('new-alert', (alert) => {
+                addLog(`🔔 New Alert: ${JSON.stringify(alert)}`, 'success');
+            });
+
+            
+            socket.on('order-created', (order) => {
+                addLog(`📝 Order Created: ${JSON.stringify(order)}`, 'success');
+            });
+
+            
+            socket.on('online-users', (users) => {
+                addLog(`👥 Online Users: ${users.length} users - ${JSON.stringify(users)}`, 'success');
+            });
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                addLog('Disconnected manually', 'warning');
+                updateStatus(false);
+            }
+        }
+
+        function registerUser() {
+            if (!socket || !socket.connected) {
+                addLog('Not connected! Connect first.', 'error');
+                return;
+            }
+
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                addLog('Please enter a User ID', 'error');
+                return;
+            }
+
+            socket.emit('register', userId);
+            addLog(`Sent registration for user: ${userId}`, 'success');
+        }
+
+        function getOnlineUsers() {
+            if (!socket || !socket.connected) {
+                addLog('Not connected! Connect first.', 'error');
+                return;
+            }
+
+            socket.emit('get-online-users');
+            addLog('Requested online users list', 'success');
+        }
+
+        
+        window.addEventListener('load', () => {
+            
+            
+        });
+    </script>
+</body>
+</html>
