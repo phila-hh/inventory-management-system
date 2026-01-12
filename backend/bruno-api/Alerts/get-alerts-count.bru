@@ -1,0 +1,42 @@
+meta {
+  name: Get Active Alerts Count
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/alerts/count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get Active Alerts Count
+  
+  Get the number of active (new) alerts.
+  
+  ## Use Case
+  Display notification badge in UI showing number of unread alerts.
+  
+  ## Response
+  ```json
+  {
+    "count": 5
+  }
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has count", function() {
+    expect(res.body).to.have.property('count');
+    expect(res.body.count).to.be.a('number');
+  });
+}

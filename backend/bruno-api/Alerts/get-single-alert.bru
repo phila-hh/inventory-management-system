@@ -1,0 +1,47 @@
+meta {
+  name: Get Single Alert
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/alerts/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get Single Alert
+  
+  Retrieve details of a specific alert by ID.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the alert
+  
+  ## Response Includes
+  - Alert message
+  - Associated item information
+  - Alert type (manual_threshold or forecast_based)
+  - Status (new or dismissed)
+  - Creation timestamp
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Alert has required fields", function() {
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('message');
+    expect(res.body).to.have.property('type');
+  });
+}
