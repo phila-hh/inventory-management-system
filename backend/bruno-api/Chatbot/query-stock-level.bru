@@ -1,0 +1,51 @@
+meta {
+  name: Query - Stock Level
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/chatbot/query
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "query": "stock level for 10mm Wrench"
+  }
+}
+
+docs {
+  # Chatbot Query - Stock Level
+  
+  Ask about stock levels for a specific item.
+  
+  ## Query Patterns
+  - "stock level for [item name]"
+  - "how many [item name]"
+  - "quantity of [item name]"
+  - "available [item name]"
+  
+  ## Response Example
+  ```
+  We currently have 15 pcs of '10mm Wrench' in stock.
+  ⚠️ Warning: Stock is below reorder threshold (5).
+  📊 AI predicts usage of 8 pcs. Expected remaining: 7 pcs.
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has query and answer", function() {
+    expect(res.body).to.have.property('query');
+    expect(res.body).to.have.property('response');
+  });
+}

@@ -1,0 +1,49 @@
+meta {
+  name: Query - List Items
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/chatbot/query
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "query": "show all tools"
+  }
+}
+
+docs {
+  # Chatbot Query - List Items
+  
+  Ask to see lists of inventory items.
+  
+  ## Query Patterns
+  - "show all tools"
+  - "list materials"
+  - "show consumables"
+  - "show all items"
+  - "list inventory"
+  
+  ## Response Example
+  ```
+  Items in Tools (showing 10 of 15):
+  1. 10mm Wrench - 15 pcs
+  2. 12mm Wrench - 20 pcs
+  3. Screwdriver Set - 8 pcs
+  ...
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
