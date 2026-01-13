@@ -1,0 +1,43 @@
+meta {
+  name: Delete Item (Admin)
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/inventory/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Delete Inventory Item (Admin Only)
+  
+  Delete an inventory item permanently. Requires admin role.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the item to delete
+  
+  ## Warning
+  This action cannot be undone. Make sure to check for:
+  - Pending orders referencing this item
+  - Historical data that might be affected
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Success message returned", function() {
+    expect(res.body).to.have.property('message');
+  });
+}

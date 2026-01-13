@@ -1,0 +1,46 @@
+meta {
+  name: Get Single Order
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/orders/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get Single Order
+  
+  Retrieve details of a specific order by ID.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the order
+  
+  ## Response Includes
+  - Order details
+  - Item snapshots (name, quantity, unit at time of order)
+  - Creator information (populated)
+  - Timestamps
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Order has required fields", function() {
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('type');
+    expect(res.body).to.have.property('items');
+  });
+}

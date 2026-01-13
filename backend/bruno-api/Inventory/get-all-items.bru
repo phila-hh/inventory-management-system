@@ -1,0 +1,45 @@
+meta {
+  name: Get All Items
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/inventory?category=&search=
+  body: none
+  auth: bearer
+}
+
+params:query {
+  category: 
+  search: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get All Inventory Items
+  
+  Retrieve all inventory items with optional filters.
+  
+  ## Query Parameters
+  - `category` (optional): Filter by category (Tools, Materials, Consumables)
+  - `search` (optional): Search by item name
+  
+  ## Examples
+  - All items: `/inventory`
+  - Tools only: `/inventory?category=Tools`
+  - Search: `/inventory?search=wrench`
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,47 @@
+meta {
+  name: Update Order Status
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/orders/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "status": "cancelled"
+  }
+}
+
+docs {
+  # Update Order Status
+  
+  Update the status of an existing order.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the order
+  
+  ## Request Body
+  - `status`: New status (pending, completed, cancelled)
+  
+  ## Note
+  Changing status does NOT affect inventory quantities.
+  Stock is adjusted when order is created.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
