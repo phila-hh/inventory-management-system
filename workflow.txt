@@ -1,0 +1,240 @@
+﻿# Step 1: Clone the repository to your machine
+git clone https://github.com/phla-hh/inventory-management-system.git
+
+# Step 2: Open development branch
+git checkout -b develop
+
+# Step 3: Create a feature branch
+git checkout -b feature/inventory-orders
+
+# Step 4: Start commiting files
+# ============================================================
+# COMMIT 1: Backend Inventory Schema
+# ============================================================
+git add backend/src/modules/inventory/schema/
+
+git commit -m "feat(backend): add inventory item schema
+
+- Define inventory item Mongoose schema
+- Add fields: name, sku, quantity, price, category
+- Add timestamps and indexes"
+
+# ============================================================
+# COMMIT 2: Backend Inventory DTOs
+# ============================================================
+git add backend/src/modules/inventory/dto/
+
+git commit -m "feat(backend): add inventory DTOs
+
+- Add create inventory item DTO with validation
+- Add update inventory item DTO with partial fields"
+
+# ============================================================
+# COMMIT 3: Backend Inventory Service
+# ============================================================
+git add backend/src/modules/inventory/inventory.service.ts
+
+git commit -m "feat(backend): implement inventory service
+
+- Add CRUD operations for inventory items
+- Add low stock detection logic
+- Add stock quantity management
+- Add search and filter functionality"
+
+# ============================================================
+# COMMIT 4: Backend Inventory Controller
+# ============================================================
+git add backend/src/modules/inventory/inventory.controller.ts
+
+git commit -m "feat(backend): add inventory controller
+
+- Add GET /inventory endpoint
+- Add GET /inventory/:id endpoint
+- Add POST /inventory endpoint
+- Add PATCH /inventory/:id endpoint
+- Add DELETE /inventory/:id endpoint
+- Add GET /inventory/low-stock endpoint"
+
+# ============================================================
+# COMMIT 5: Backend Inventory Module
+# ============================================================
+git add backend/src/modules/inventory/inventory.module.ts
+
+git commit -m "feat(backend): configure inventory module
+
+- Register inventory controller
+- Register inventory service
+- Import Mongoose schema"
+
+# ============================================================
+# COMMIT 6: Backend Orders Schema
+# ============================================================
+git add backend/src/modules/orders/schema/
+
+git commit -m "feat(backend): add order schema
+
+- Define order Mongoose schema
+- Add fields: items, status, total, customer info
+- Add order status enum
+- Add timestamps"
+
+# ============================================================
+# COMMIT 7: Backend Orders DTOs
+# ============================================================
+git add backend/src/modules/orders/dto/
+
+git commit -m "feat(backend): add order DTOs
+
+- Add create order DTO with items validation
+- Add update order DTO for status changes"
+
+# ============================================================
+# COMMIT 8: Backend Orders Service
+# ============================================================
+git add backend/src/modules/orders/orders.service.ts
+
+git commit -m "feat(backend): implement orders service
+
+- Add order creation with stock validation
+- Add order status management
+- Add order retrieval with population
+- Add inventory quantity updates on order"
+
+# ============================================================
+# COMMIT 9: Backend Orders Controller
+# ============================================================
+git add backend/src/modules/orders/orders.controller.ts
+
+git commit -m "feat(backend): add orders controller
+
+- Add GET /orders endpoint with filtering
+- Add GET /orders/:id endpoint
+- Add POST /orders endpoint
+- Add POST /orders/incoming endpoint
+- Add PATCH /orders/:id/status endpoint"
+
+# ============================================================
+# COMMIT 10: Backend Orders Module
+# ============================================================
+git add backend/src/modules/orders/orders.module.ts
+
+git commit -m "feat(backend): configure orders module
+
+- Register orders controller
+- Register orders service
+- Import required schemas"
+
+# ============================================================
+# COMMIT 11: Backend File Upload Service
+# ============================================================
+git add backend/src/shared/file-upload/ backend/uploads/
+
+# Create .gitkeep in uploads folder
+touch backend/uploads/.gitkeep
+
+git commit -m "feat(backend): add file upload service
+
+- Add file upload module
+- Add file upload service with multer
+- Configure upload directory"
+
+# ============================================================
+# COMMIT 12: Bruno API Inventory Collection
+# ============================================================
+git add backend/bruno-api/Inventory/
+
+git commit -m "docs(backend): add Bruno API collection for inventory
+
+- Add create item endpoint
+- Add get all items endpoint
+- Add get single item endpoint
+- Add update item endpoint
+- Add delete item endpoint
+- Add get low stock endpoint"
+
+# ============================================================
+# COMMIT 13: Bruno API Orders Collection
+# ============================================================
+git add backend/bruno-api/Orders/
+
+git commit -m "docs(backend): add Bruno API collection for orders
+
+- Add create order endpoint
+- Add create incoming order endpoint
+- Add get all orders endpoint
+- Add get single order endpoint
+- Add update order status endpoint"
+
+# ============================================================
+# COMMIT 14: Frontend Inventory Service
+# ============================================================
+git add frontend/src/services/inventory.service.js
+
+git commit -m "feat(frontend): add inventory service
+
+- Add getAll, getOne, create, update, delete methods
+- Add getLowStock method
+- Add search functionality"
+
+# ============================================================
+# COMMIT 15: Frontend Orders Service
+# ============================================================
+git add frontend/src/services/orders.service.js
+
+git commit -m "feat(frontend): add orders service
+
+- Add order CRUD operations
+- Add order status update method
+- Add incoming order creation"
+
+# ============================================================
+# COMMIT 16: Frontend Inventory Types
+# ============================================================
+git add frontend/src/types/inventory.types.js frontend/src/types/order.types.js
+
+git commit -m "feat(frontend): add inventory and order types
+
+- Add inventory item type definitions
+- Add order type definitions
+- Add order status constants"
+
+# ============================================================
+# COMMIT 17: Frontend Dashboard Page
+# ============================================================
+git add frontend/src/pages/Dashboard.jsx
+
+git commit -m "feat(frontend): implement dashboard page
+
+- Add dashboard with statistics cards
+- Add recent orders summary
+- Add low stock alerts widget
+- Add inventory overview chart"
+
+# ============================================================
+# COMMIT 18: Frontend Inventory Page
+# ============================================================
+git add frontend/src/pages/Inventory.jsx
+
+git commit -m "feat(frontend): implement inventory management page
+
+- Add inventory items table
+- Add create/edit item modal
+- Add delete confirmation
+- Add search and filter functionality
+- Add low stock indicators"
+
+# ============================================================
+# COMMIT 19: Frontend Orders Page
+# ============================================================
+git add frontend/src/pages/Orders.jsx
+
+git commit -m "feat(frontend): implement orders management page
+
+- Add orders table with status badges
+- Add create order modal
+- Add order details view
+- Add status update functionality
+- Add order filtering"
+
+# Push all commits
+git push -u origin feature/inventory-orders
