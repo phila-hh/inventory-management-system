@@ -1,0 +1,56 @@
+meta {
+  name: Create Item (Admin)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/inventory
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "10mm Wrench",
+    "description": "Standard 10mm combination wrench",
+    "category": "Tools",
+    "quantity": 15,
+    "unit": "pcs",
+    "reorderThreshold": 5
+  }
+}
+
+docs {
+  # Create Inventory Item (Admin Only)
+  
+  Create a new inventory item. Requires admin role.
+  
+  ## Request Body
+  - `name` (required): Item name
+  - `description` (optional): Item description
+  - `category` (required): Tools | Materials | Consumables
+  - `quantity` (required): Initial stock quantity
+  - `unit` (required): pcs | box | kg | liters | meters
+  - `reorderThreshold` (required): Minimum quantity before alert
+  
+  ## Example Categories
+  - **Tools**: Wrenches, screwdrivers, drills
+  - **Materials**: Steel pipes, wood planks, cement
+  - **Consumables**: Paint, screws, nails
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Response has created item", function() {
+    expect(res.body).to.have.property('_id');
+    expect(res.body.name).to.exist;
+  });
+}

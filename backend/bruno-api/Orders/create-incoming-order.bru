@@ -1,0 +1,56 @@
+meta {
+  name: Create Incoming Order
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/orders
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "type": "incoming",
+    "items": [
+      {
+        "itemId": "673d4e8a8f1c2d3e4f5a6b7c",
+        "quantity": 10
+      }
+    ],
+    "notes": "Stock replenishment from supplier"
+  }
+}
+
+docs {
+  # Create Incoming Order (Purchase)
+  
+  Record incoming stock/purchases. This increases inventory quantities.
+  
+  ## Use Cases
+  - Receiving shipment from supplier
+  - Restocking low inventory
+  - Initial stock entry
+  
+  ## What Happens
+  1. Transaction starts
+  2. For each item: stock quantity is increased
+  3. Order record is created with snapshots
+  4. Transaction commits
+  5. Stock levels are updated
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Order type is incoming", function() {
+    expect(res.body.type).to.equal('incoming');
+  });
+}

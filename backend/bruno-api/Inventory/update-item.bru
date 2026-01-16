@@ -1,0 +1,57 @@
+meta {
+  name: Update Item (Admin)
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/inventory/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 20,
+    "reorderThreshold": 8
+  }
+}
+
+docs {
+  # Update Inventory Item (Admin Only)
+  
+  Update an existing inventory item. Requires admin role.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the item to update
+  
+  ## Request Body (All Optional)
+  - `name`: New item name
+  - `description`: New description
+  - `category`: New category
+  - `quantity`: New stock quantity
+  - `unit`: New unit
+  - `reorderThreshold`: New threshold
+  
+  ## Notes
+  - Only include fields you want to update
+  - `lastUpdated` is automatically set
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Item was updated", function() {
+    expect(res.body).to.have.property('_id');
+  });
+}

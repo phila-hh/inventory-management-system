@@ -1,0 +1,51 @@
+meta {
+  name: Get All Orders
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/orders?type=&status=&userId=
+  body: none
+  auth: bearer
+}
+
+params:query {
+  type: 
+  status: 
+  userId: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get All Orders
+  
+  Retrieve orders with optional filters.
+  
+  ## Query Parameters (All Optional)
+  - `type`: Filter by order type (incoming, outgoing)
+  - `status`: Filter by status (pending, completed, cancelled)
+  - `userId`: Filter by user who created the order
+  
+  ## Examples
+  - All orders: `/orders`
+  - Completed orders: `/orders?status=completed`
+  - Outgoing orders: `/orders?type=outgoing`
+  - User's orders: `/orders?userId=user_id`
+  
+  ## Response
+  Returns array of orders sorted by creation date (newest first).
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

@@ -1,0 +1,77 @@
+meta {
+  name: Create Order
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/orders
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "type": "outgoing",
+    "items": [
+      {
+        "itemId": "673d4e8a8f1c2d3e4f5a6b7c",
+        "quantity": 2
+      }
+    ],
+    "notes": "Used for client vehicle repair"
+  }
+}
+
+docs {
+  # Create Order
+  
+  Create a new order (incoming or outgoing). Uses MongoDB transaction to ensure data consistency.
+  
+  ## Request Body
+  - `type` (required): "incoming" (purchase) or "outgoing" (usage)
+  - `items` (required): Array of items with itemId and quantity
+  - `notes` (optional): Additional notes
+  
+  ## Order Types
+  
+  ### Outgoing (Usage)
+  - Decreases inventory stock
+  - Checks if sufficient quantity available
+  - Records who used the items
+  
+  ### Incoming (Purchase)
+  - Increases inventory stock
+  - Records receipt of new stock
+  
+  ## Transaction Safety
+  If any part fails (e.g., insufficient stock), entire operation is rolled back.
+  
+  ## Example: Multi-Item Order
+  ```json
+  {
+    "type": "outgoing",
+    "items": [
+      { "itemId": "item1_id", "quantity": 2 },
+      { "itemId": "item2_id", "quantity": 5 }
+    ],
+    "notes": "Workshop project"
+  }
+  ```
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Order created successfully", function() {
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('items');
+    expect(res.body.status).to.equal('completed');
+  });
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Get Single Item
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/inventory/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get Single Inventory Item
+  
+  Retrieve details of a specific inventory item by ID.
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the item
+  
+  ## Response
+  Returns the complete item object including forecast data if available.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has item properties", function() {
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('name');
+    expect(res.body).to.have.property('quantity');
+  });
+}
