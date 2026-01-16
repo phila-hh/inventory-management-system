@@ -1,0 +1,47 @@
+meta {
+  name: Query - Low Stock
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/chatbot/query
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "query": "what items are running low?"
+  }
+}
+
+docs {
+  # Chatbot Query - Low Stock
+  
+  Check which items are running low on stock.
+  
+  ## Query Patterns
+  - "what items are running low"
+  - "low stock items"
+  - "items to reorder"
+  - "stock shortage"
+  
+  ## Response Example
+  ```
+  ⚠️ 3 item(s) are running low:
+  1. Nails Box - 4 box (threshold: 5)
+  2. Paint (White) - 8 liters (threshold: 10)
+  3. Power Drill - 1 pcs (threshold: 2)
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

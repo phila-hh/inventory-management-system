@@ -1,0 +1,51 @@
+meta {
+  name: Get All Alerts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/alerts?status=
+  body: none
+  auth: bearer
+}
+
+params:query {
+  status: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get All Alerts
+  
+  Retrieve alerts with optional status filter.
+  
+  ## Query Parameters (Optional)
+  - `status`: Filter by status (new, dismissed)
+  
+  ## Alert Types
+  
+  ### manual_threshold
+  Generated when stock falls below reorderThreshold
+  
+  ### forecast_based
+  Generated when AI predicts stock will be insufficient
+  
+  ## Examples
+  - All alerts: `/alerts`
+  - Active alerts: `/alerts?status=new`
+  - Dismissed alerts: `/alerts?status=dismissed`
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    expect(res.body).to.be.an('array');
+  });
+}

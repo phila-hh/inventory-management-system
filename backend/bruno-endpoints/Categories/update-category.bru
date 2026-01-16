@@ -1,0 +1,42 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/categories/507f1f77bcf86cd799439011
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "description": "Updated description for electronics",
+    "icon": "⚡"
+  }
+}
+
+docs {
+  # Update Category
+  
+  Updates an existing category.
+  
+  **Admin only**
+  
+  ## URL Parameters
+  - `id`: MongoDB ObjectId of the category
+  
+  ## Request Body (all optional)
+  - `name` (string): Category name (must be unique)
+  - `description` (string): Category description
+  - `icon` (string): Emoji or icon identifier
+  - `isActive` (boolean): Whether category is active
+  
+  ## Response
+  Returns the updated category object.
+}

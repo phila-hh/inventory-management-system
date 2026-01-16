@@ -1,0 +1,27 @@
+meta {
+  name: Get Category by ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/categories/507f1f77bcf86cd799439011
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  # Get Category by ID
+  
+  Retrieves a single category by MongoDB ObjectId.
+  
+  ## URL Parameters
+  - `id`: MongoDB ObjectId of the category
+  
+  ## Response
+  Returns category object or 404 if not found.
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Create Category
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "name": "Electronics",
+    "description": "Electronic components and devices",
+    "icon": "🔌",
+    "isActive": true
+  }
+}
+
+docs {
+  # Create Category
+  
+  Creates a new inventory category.
+  
+  **Admin only**
+  
+  ## Request Body
+  - `name` (string, required, unique): Category name
+  - `description` (string, optional): Category description
+  - `icon` (string, optional): Emoji or icon identifier
+  - `isActive` (boolean, optional): Whether category is active (default: true)
+  
+  ## Response
+  Returns the created category with MongoDB `_id`.
+}

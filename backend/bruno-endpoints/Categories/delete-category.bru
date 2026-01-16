@@ -1,0 +1,33 @@
+meta {
+  name: Delete Category
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/categories/507f1f77bcf86cd799439011
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  # Delete Category
+  
+  Permanently deletes a category from the database.
+  
+  **Admin only**
+  
+  ## URL Parameters
+  - `id`: MongoDB ObjectId of the category to delete
+  
+  ## Response
+  Returns 200 OK on successful deletion.
+  
+  ## Notes
+  - Consider soft delete (set isActive: false) if category has associated items
+  - Hard delete may cause data integrity issues with inventory items
+}

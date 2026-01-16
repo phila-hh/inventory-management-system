@@ -1,0 +1,46 @@
+meta {
+  name: Dismiss Alert
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/alerts/:id/dismiss
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 673d4e8a8f1c2d3e4f5a6b7c
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Dismiss Alert
+  
+  Mark an alert as dismissed (read/acknowledged).
+  
+  ## Path Parameters
+  - `id`: MongoDB ObjectId of the alert to dismiss
+  
+  ## Effect
+  - Changes alert status from "new" to "dismissed"
+  - Removes from active alerts count
+  - Alert remains in database for historical records
+  
+  ## Use Case
+  User acknowledges they've seen the low stock warning and taken action.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Alert status is dismissed", function() {
+    expect(res.body.status).to.equal('dismissed');
+  });
+}

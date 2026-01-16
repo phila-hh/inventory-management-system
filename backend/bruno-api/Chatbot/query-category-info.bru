@@ -1,0 +1,46 @@
+meta {
+  name: Query - Category Info
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/chatbot/query
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "query": "how many tools do we have?"
+  }
+}
+
+docs {
+  # Chatbot Query - Category Information
+  
+  Get statistics about a category.
+  
+  ## Query Patterns
+  - "how many tools"
+  - "total materials"
+  - "consumables count"
+  - "tools category"
+  
+  ## Response Example
+  ```
+  Category: Tools
+  Total items: 5
+  Combined quantity: 58
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

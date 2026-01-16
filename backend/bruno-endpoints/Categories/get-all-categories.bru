@@ -1,0 +1,31 @@
+meta {
+  name: Get All Categories
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/categories?isActive=true
+  body: none
+  auth: bearer
+}
+
+params:query {
+  isActive: true
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  # Get All Categories
+  
+  Retrieves all inventory categories with optional filtering.
+  
+  ## Query Parameters
+  - `isActive` (boolean, optional): Filter by active status
+  
+  ## Response
+  Returns array of category objects.
+}

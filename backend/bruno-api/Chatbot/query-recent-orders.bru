@@ -1,0 +1,49 @@
+meta {
+  name: Query - Recent Orders
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/chatbot/query
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "query": "show recent orders"
+  }
+}
+
+docs {
+  # Chatbot Query - Recent Orders
+  
+  View recent order history.
+  
+  ## Query Patterns
+  - "show recent orders"
+  - "order history"
+  - "latest orders"
+  - "recent usage"
+  
+  ## Response Example
+  ```
+  Recent orders:
+  1. outgoing - 2 item(s) - 11/12/2025
+  2. incoming - 1 item(s) - 11/11/2025
+  3. outgoing - 3 item(s) - 11/10/2025
+  4. incoming - 5 item(s) - 11/09/2025
+  5. outgoing - 1 item(s) - 11/08/2025
+  ```
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}
