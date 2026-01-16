@@ -11,8 +11,8 @@ import mongoose from 'mongoose';
 
 // Added the following two lines to solve the error that shows
 // on Node.js version 18 when running inside a docker container
-import { webcrypto } from 'crypto';
-(globalThis as any).crypto = webcrypto;
+// import { webcrypto } from 'crypto';
+// (globalThis as any).crypto = webcrypto;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
