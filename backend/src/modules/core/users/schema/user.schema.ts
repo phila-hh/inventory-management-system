@@ -18,7 +18,7 @@ export class User extends mongoose.Document {
   name: string;
 
   @ApiProperty({ type: String })
-  @Prop({ required: true, unique: true, trim: true, lowercase: true })
+  @Prop({ required: true, trim: true, lowercase: true })
   username: string;
 
   @ApiProperty({ type: String })
@@ -58,10 +58,10 @@ UserSchema.pre('save', async function (next) {
 });
 
 UserSchema.pre('findOneAndUpdate', async function (next) {
-  const update = this.getUpdate() as any; 
+  const update = this.getUpdate() as any;
   if (!update) return next();
 
-  
+
   const plainPassword =
     update.password || (update.$set && update.$set.password);
 
@@ -72,7 +72,7 @@ UserSchema.pre('findOneAndUpdate', async function (next) {
     } else if (update.$set) {
       update.$set.password = hashed;
     }
-    
+
     const canLogin = !!plainPassword;
     if (update.canLogin !== undefined) {
       update.canLogin = canLogin;

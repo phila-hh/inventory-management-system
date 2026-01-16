@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ChatbotService } from './chatbot.service';
 import { ChatQueryDto } from './dto/chat-query.dto';
@@ -10,6 +10,7 @@ export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 
   @Post('query')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Ask the chatbot a question about inventory' })
   @ApiResponse({ status: 200, description: 'Chatbot response' })
   async query(@Body() queryDto: ChatQueryDto) {

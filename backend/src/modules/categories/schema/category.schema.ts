@@ -27,4 +27,4 @@ export class Category extends mongoose.Document {
 export const CategorySchema = SchemaFactory.createForClass(Category);
 
 
-CategorySchema.index({ name: 1 });
+// CategorySchema.index({ name: 1 });

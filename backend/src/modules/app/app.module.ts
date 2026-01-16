@@ -17,16 +17,24 @@ import { GatewayModule } from 'src/gateways/gateway.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 
+// Select the URI based on the environment
+const getDatabaseUri = () => {
+  if (process.env.NODE_ENV === 'test') {
+    return process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/inventory_test_db';
+  }
+  return process.env.MONGODB_URI;
+};
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', '..', '..', 'uploads'), 
+      rootPath: path.join(__dirname, '..', '..', '..', 'uploads'),
       serveRoot: '/uploads',
     }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRoot(getDatabaseUri()),
     ScheduleModule.forRoot(),
     CoreModule,
     CategoriesModule,
