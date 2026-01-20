@@ -99,6 +99,7 @@ export class ForecastingService {
 
     const userPrompt = `Item: ${data.itemName}\nHistorical Daily Usage (last 6 months):\n${JSON.stringify(data.historicalData, null, 2)}\n\nTask: Predict the usage for the next day based on trends, patterns, and seasonality.\n\nImportant:\n- Consider trends (increasing/decreasing usage)\n- Consider day of week patterns\n- Consider seasonal patterns\n- Be conservative but realistic\n- Round to whole numbers\n\nReturn JSON with predictedUsage field.`;
 
+
     const response = await axios.post(
       this.OPENROUTER_API_URL,
       {

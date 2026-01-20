@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { Model, Connection, ClientSession } from 'mongoose';
+import { Model, Connection, ClientSession, Types } from 'mongoose';
 import { Order, OrderDocument, OrderType, OrderStatus } from './schema/order.schema';
 import { InventoryItem, InventoryItemDocument } from '../inventory/schema/inventory-item.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -27,7 +27,7 @@ export class OrdersService {
     session.startTransaction();
 
     try {
-      
+
       const orderItems = [];
 
       for (const item of createDto.items) {
@@ -42,7 +42,7 @@ export class OrdersService {
           );
         }
 
-        
+
         if (createDto.type === OrderType.OUTGOING) {
           if (inventoryItem.quantity < item.quantity) {
             throw new BadRequestException(
@@ -50,7 +50,7 @@ export class OrdersService {
             );
           }
 
-          
+
           await this.inventoryItemModel
             .findByIdAndUpdate(
               item.itemId,
@@ -62,7 +62,7 @@ export class OrdersService {
             )
             .exec();
         } else {
-          
+
           await this.inventoryItemModel
             .findByIdAndUpdate(
               item.itemId,
@@ -75,7 +75,7 @@ export class OrdersService {
             .exec();
         }
 
-        
+
         orderItems.push({
           itemId: inventoryItem._id,
           name: inventoryItem.name,
@@ -84,7 +84,7 @@ export class OrdersService {
         });
       }
 
-      
+
       const newOrder = new this.orderModel({
         type: createDto.type,
         status: OrderStatus.COMPLETED,
@@ -96,12 +96,12 @@ export class OrdersService {
 
       const savedOrder = await newOrder.save({ session });
 
-      
+
       await session.commitTransaction();
 
       return savedOrder;
     } catch (error) {
-      
+
       await session.abortTransaction();
       throw error;
     } finally {
@@ -128,14 +128,14 @@ export class OrdersService {
       query.createdBy = userId;
     }
 
-    
+
     if (startDate || endDate) {
       query.createdAt = {};
       if (startDate) {
         query.createdAt.$gte = new Date(startDate);
       }
       if (endDate) {
-        
+
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
         query.createdAt.$lte = end;
@@ -190,7 +190,7 @@ export class OrdersService {
       { $unwind: '$items' },
       {
         $match: {
-          'items.itemId': itemId,
+          'items.itemId': new Types.ObjectId(itemId),
         },
       },
       {
