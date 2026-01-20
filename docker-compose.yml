@@ -1,0 +1,87 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  mongo-init:
+    image: mongo:latest
+    container_name: mongo-init
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./mongo/init-replica.js:/init-replica.js:ro
+    command: >
+      mongosh --host mongo:27017 --quiet --eval "
+        try {
+          rs.status();
+          print('Replica set already initialized');
+        } catch (e) {
+          print('Initializing replica set...');
+          load('/init-replica.js');
+          print('Replica set initialized');
+        }
+      "
+    restart: "no"
+
+  backend:
+    image: node:22
+    container_name: backend
+    working_dir: /app
+    command: sh -c "npm install --legacy-peer-deps && npm run start:dev"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/inventory-management?replicaSet=rs0
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  frontend:
+    image: node:22
+    container_name: frontend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/?replicaSet=rs0
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8888:8081"
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+    profiles:
+      - tools
+
+volumes:
+  mongo-data:
