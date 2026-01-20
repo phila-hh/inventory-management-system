@@ -26,10 +26,9 @@ export class ForecastingService {
   }
 
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
-
 // To (runs every 5 minutes):
 // @Cron('*/5 * * * *')
+@Cron(CronExpression.EVERY_DAY_AT_1AM)
   async runDemandForecasting() {
     this.logger.log('Starting AI demand forecasting job...');
 
@@ -59,7 +58,6 @@ export class ForecastingService {
             itemName: item.name,
             historicalData,
           });
-
 
           await this.inventoryService.updateForecast(
             item._id.toString(),
@@ -99,7 +97,7 @@ export class ForecastingService {
   private async forecastWithAI(data: any): Promise<{ predictedUsage: number }> {
     const systemPrompt = `You are an inventory forecasting AI. Analyze historical usage data and predict future usage. Return ONLY a JSON object with format: {"predictedUsage": number}`;
 
-    const userPrompt = `Item: ${data.itemName}\nHistorical Daily Usage (last 6 months):\n${JSON.stringify(data.historicalData, null, 2)}\n\nTask: Predict the usage for the next period based on trends, patterns, and seasonality.\n\nImportant:\n- Consider trends (increasing/decreasing usage)\n- Consider day of week patterns\n- Consider seasonal patterns\n- Be conservative but realistic\n- Round to whole numbers\n\nReturn JSON with predictedUsage field.`;
+    const userPrompt = `Item: ${data.itemName}\nHistorical Daily Usage (last 6 months):\n${JSON.stringify(data.historicalData, null, 2)}\n\nTask: Predict the usage for the next day based on trends, patterns, and seasonality.\n\nImportant:\n- Consider trends (increasing/decreasing usage)\n- Consider day of week patterns\n- Consider seasonal patterns\n- Be conservative but realistic\n- Round to whole numbers\n\nReturn JSON with predictedUsage field.`;
 
     const response = await axios.post(
       this.OPENROUTER_API_URL,
