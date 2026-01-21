@@ -38,7 +38,7 @@ mongo
 ## Step 2: Install Dependencies
 
 ```bash
-cd inv
+cd backend
 npm install --legacy-peer-deps
 ```
 
